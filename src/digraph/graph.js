@@ -224,13 +224,23 @@ class Graph extends React.Component {
 
   // Updates the graph with a new node
   onCreateNode = (x, y) => {
+    const nodeType = prompt(
+      'What shape should this Node be? (rectangle, square or circle)'
+    );
     const graph = this.state.graph;
 
     // This is just an example - any sort of logic
     // could be used here to determine node type
     // There is also support for subtypes. (see 'sample' above)
     // The subtype geometry will underlay the 'type' geometry for a node
-    const type = Math.random() < 0.25 ? SPECIAL_TYPE : EMPTY_TYPE;
+
+    const nodeTypeStr = nodeType.toLowerCase().trim();
+    const type =
+      nodeTypeStr === 'square'
+        ? SPECIAL_TYPE
+        : nodeTypeStr === 'rectange'
+        ? SKINNY_TYPE
+        : EMPTY_TYPE;
 
     const viewNode = {
       id: Date.now(),
@@ -275,6 +285,7 @@ class Graph extends React.Component {
 
   // Creates a new node between two edges
   onCreateEdge = (sourceViewNode, targetViewNode) => {
+    const edgeName = prompt('What is the name of this edge?');
     const graph = this.state.graph;
     // This is just an example - any sort of logic
     // could be used here to determine edge type
@@ -287,6 +298,8 @@ class Graph extends React.Component {
       source: sourceViewNode[NODE_KEY],
       target: targetViewNode[NODE_KEY],
       type,
+      handleText: edgeName,
+      handleTooltipText: edgeName,
     };
 
     // Only add the edge when the source node is not the same as the target
@@ -460,10 +473,8 @@ class Graph extends React.Component {
 
       graph.nodes[indexOfNode].title = this.state.newNodeTitle;
 
-      this.setState({ graph });
-      addToSessionStore('graph', graph);
-
-      this.onSelect(null);
+      this.setState({ graph, selected: null });
+      // addToSessionStore('graph', graph);
     }
   };
 
@@ -472,8 +483,22 @@ class Graph extends React.Component {
   };
 
   editEdgeTitle = (selected) => {
+    if (selected === null) return alert('Please select an edge first');
+
+    if (this.state.newEdgeTitle === '')
+      return alert('Edge title cannot be empty');
+
+    console.log(this.state.graph.edges);
     for (let edge of selected.edges) {
-      this.state.graph.edges.findIndex((n) => console.log(edge));
+      const indexOfEdge = this.state.graph.edges.findIndex(
+        (n) => n.handleText === edge[1].handleText
+      );
+
+      const graph = this.state.graph;
+
+      graph.edges[indexOfEdge].handleText = this.state.newEdgeTitle;
+
+      this.setState({ graph, selected: null });
     }
   };
 
@@ -522,20 +547,20 @@ class Graph extends React.Component {
         <input
           type="text"
           onChange={this.setNodeTitle}
-          placeholder="Node Title"
+          placeholder="Node Name"
         />
-        <button onClick={() => this.editNodeName(selected)}>Set Title</button>
+        <button onClick={() => this.editNodeName(selected)}>Rename Node</button>
         <div>
           <input
             type="text"
             onChange={this.setEdgeTitle}
-            placeholder="Edge Title"
+            placeholder="Edge Name"
           />
           <button onClick={() => this.editEdgeTitle(selected)}>
-            Set Edge Title
+            Rename Edge
           </button>
         </div>
-        <div id="graph" style={{ height: 600 }}>
+        <div id="graph" style={{ height: 650 }}>
           <GraphView
             ref={(el) => (this.GraphView = el)}
             allowMultiselect={allowMultiselect}
