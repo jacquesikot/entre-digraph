@@ -9,10 +9,11 @@ import GraphConfig, {
   nodeTypes,
   // COMPLEX_CIRCLE_TYPE,
   POLY_TYPE,
-  // SPECIAL_CHILD_SUBTYPE,
+  SPECIAL_CHILD_SUBTYPE,
   SPECIAL_EDGE_TYPE,
   SPECIAL_TYPE,
   SKINNY_TYPE,
+  // SELECTED_SPECIAL_TYPE,
 } from './graph-config'; // Configures node/edge types
 
 const sample = {
@@ -117,6 +118,7 @@ class Graph extends React.Component {
       allowMultiselect: true,
       newNodeTitle: '',
       newEdgeTitle: '',
+      search: '',
     };
 
     this.GraphView = React.createRef();
@@ -225,7 +227,7 @@ class Graph extends React.Component {
   // Updates the graph with a new node
   onCreateNode = (x, y) => {
     const nodeType = prompt(
-      'What shape should this Node be? (rectangle, square or circle)'
+      'What shape should this Node be? (rectangle, square or circle) - defaults to circle'
     );
     const graph = this.state.graph;
 
@@ -235,12 +237,17 @@ class Graph extends React.Component {
     // The subtype geometry will underlay the 'type' geometry for a node
 
     const nodeTypeStr = nodeType.toLowerCase().trim();
-    const type =
-      nodeTypeStr === 'square'
-        ? SPECIAL_TYPE
-        : nodeTypeStr === 'rectange'
-        ? SKINNY_TYPE
-        : EMPTY_TYPE;
+
+    const returnType = () => {
+      if (nodeTypeStr === 'square') {
+        return SPECIAL_TYPE;
+      } else if (nodeTypeStr === 'rectangle') {
+        return SKINNY_TYPE;
+      } else if (nodeTypeStr === 'circle') {
+        return EMPTY_TYPE;
+      }
+    };
+    const type = returnType();
 
     const viewNode = {
       id: Date.now(),
@@ -502,6 +509,25 @@ class Graph extends React.Component {
     }
   };
 
+  setSearch = (event) => {
+    this.setState({ search: event.target.value });
+  };
+  searchNodes = () => {
+    // alert(this.state.search);
+    const graph = this.state.graph;
+
+    const map = new Map();
+
+    map.set(graph.nodes[0].id, graph.nodes[0]);
+
+    const selected = {
+      nodes: map,
+      edges: null,
+    };
+
+    this.setState({ selected });
+  };
+
   /*
    * Render
    */
@@ -559,6 +585,15 @@ class Graph extends React.Component {
           <button onClick={() => this.editEdgeTitle(selected)}>
             Rename Edge
           </button>
+        </div>
+
+        <div>
+          <input
+            type="text"
+            onChange={this.setSearch}
+            placeholder="Search Nodes"
+          />
+          <button onClick={this.searchNodes}>Search</button>
         </div>
         <div id="graph" style={{ height: 650 }}>
           <GraphView

@@ -31,8 +31,15 @@ export const SPECIAL_CHILD_SUBTYPE = 'specialChild';
 export const EMPTY_EDGE_TYPE = 'emptyEdge';
 export const SPECIAL_EDGE_TYPE = 'specialEdge';
 export const COMPLEX_CIRCLE_TYPE = 'complexCircle';
+export const SELECTED_SPECIAL_TYPE = 'selectedSpecial';
 
-export const nodeTypes = [EMPTY_TYPE, POLY_TYPE, SPECIAL_TYPE, SKINNY_TYPE];
+export const nodeTypes = [
+  EMPTY_TYPE,
+  POLY_TYPE,
+  SPECIAL_TYPE,
+  SKINNY_TYPE,
+  SELECTED_SPECIAL_TYPE,
+];
 export const edgeTypes = [EMPTY_EDGE_TYPE, SPECIAL_EDGE_TYPE];
 
 const EmptyNodeShape = (
@@ -50,6 +57,17 @@ const CustomEmptyShape = (
 const SpecialShape = (
   <symbol viewBox="-27 0 154 154" id="special" width="154" height="154">
     <rect transform="translate(50) rotate(45)" width="109" height="109" />
+  </symbol>
+);
+
+const SelectedSpecialShape = (
+  <symbol viewBox="-27 0 154 154" id="selectedSpecial" width="154" height="154">
+    <rect
+      transform="translate(50) rotate(45)"
+      width="109"
+      height="109"
+      fill="#90EE90"
+    />
   </symbol>
 );
 
@@ -154,6 +172,11 @@ export default {
       shape: ComplexCircleShape,
       shapeId: '#complexCircle',
       typeText: '#complexCircle',
+    },
+    selectedSpecial: {
+      shape: SelectedSpecialShape,
+      shapeId: '#selectedSpecial',
+      typeText: '#selectedSpecial',
     },
   },
 };
