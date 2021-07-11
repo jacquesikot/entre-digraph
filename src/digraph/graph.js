@@ -226,11 +226,6 @@ class Graph extends React.Component {
     );
     const graph = this.state.graph;
 
-    // This is just an example - any sort of logic
-    // could be used here to determine node type
-    // There is also support for subtypes. (see 'sample' above)
-    // The subtype geometry will underlay the 'type' geometry for a node
-
     const nodeTypeStr = nodeType.toLowerCase().trim();
 
     const returnType = () => {
@@ -546,14 +541,6 @@ class Graph extends React.Component {
     return (
       <>
         <div className="graph-header">
-          <button onClick={this.addStartNode}>Add Node</button>
-          <button onClick={this.deleteStartNode}>Delete Node</button>
-          <input
-            className="total-nodes"
-            type="number"
-            onBlur={this.handleChange}
-            placeholder={this.state.totalNodes.toString()}
-          />
           <div className="layout-engine">
             <span>Layout Engine:</span>
             <select
