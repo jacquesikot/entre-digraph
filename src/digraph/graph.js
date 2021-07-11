@@ -7,13 +7,9 @@ import GraphConfig, {
   EMPTY_TYPE,
   NODE_KEY,
   nodeTypes,
-  // COMPLEX_CIRCLE_TYPE,
-  POLY_TYPE,
-  SPECIAL_CHILD_SUBTYPE,
   SPECIAL_EDGE_TYPE,
   SPECIAL_TYPE,
   SKINNY_TYPE,
-  // SELECTED_SPECIAL_TYPE,
 } from './graph-config'; // Configures node/edge types
 
 const sample = {
@@ -21,20 +17,19 @@ const sample = {
   nodes: [
     {
       id: 'start1',
-      title: 'Start (0)',
+      title: 'start',
       type: SPECIAL_TYPE,
     },
     {
       id: 'a1',
-      title: 'Node A (1)',
+      title: 'one',
       type: SKINNY_TYPE,
       x: 258.3976135253906,
       y: 331.9783248901367,
     },
     {
       id: 'a2',
-      subtype: POLY_TYPE,
-      title: 'Node B (2)',
+      title: 'two',
       type: EMPTY_TYPE,
       x: 593.9393920898438,
       y: 260.6060791015625,
@@ -513,19 +508,26 @@ class Graph extends React.Component {
     this.setState({ search: event.target.value });
   };
   searchNodes = () => {
-    // alert(this.state.search);
-    const graph = this.state.graph;
+    const nodes = this.state.graph.nodes;
 
-    const map = new Map();
+    for (let i = 0; i < nodes.length; i++) {
+      if (nodes[i].title === this.state.search) {
+        const graph = this.state.graph;
 
-    map.set(graph.nodes[0].id, graph.nodes[0]);
+        const index = this.getNodeIndex(nodes[i]);
 
-    const selected = {
-      nodes: map,
-      edges: null,
-    };
+        const map = new Map();
 
-    this.setState({ selected });
+        map.set(graph.nodes[index].id, graph.nodes[index]);
+
+        const selected = {
+          nodes: map,
+          edges: null,
+        };
+
+        return this.setState({ selected });
+      }
+    }
   };
 
   /*
