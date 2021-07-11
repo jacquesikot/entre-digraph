@@ -84,15 +84,15 @@ const addToSessionStore = (key, item) => {
   sessionStorage.setItem(key, value);
 };
 
-// const getFromSessionStore = (key) => {
-//   const value = sessionStorage.getItem(key);
-//   const returnedValue = JSON.parse(value);
-//   if (value) {
-//     return returnedValue;
-//   } else {
-//     return sample;
-//   }
-// };
+const getFromSessionStore = (key) => {
+  const value = sessionStorage.getItem(key);
+  const returnedValue = JSON.parse(value);
+  if (value) {
+    return returnedValue;
+  } else {
+    return sample;
+  }
+};
 
 class Graph extends React.Component {
   GraphView;
@@ -120,7 +120,7 @@ class Graph extends React.Component {
   }
 
   componentDidMount() {
-    addToSessionStore('graph', sample);
+    this.setState({ graph: getFromSessionStore('graph') });
   }
 
   // Helper to find the index of a given node
@@ -210,7 +210,7 @@ class Graph extends React.Component {
 
     graph.nodes[i] = viewNode;
     this.setState({ graph });
-    //addToSessionStore('graph', graph);
+    addToSessionStore('graph', graph);
   };
 
   onSelect = (selected) => {
@@ -254,6 +254,7 @@ class Graph extends React.Component {
 
     graph.nodes = [...graph.nodes, viewNode];
     this.setState({ graph });
+    addToSessionStore('graph', graph);
   };
 
   // Deletes a node from the graph
@@ -266,6 +267,7 @@ class Graph extends React.Component {
     this.deleteEdgesForNode(nodeId);
 
     this.setState({ graph, selected: null });
+    addToSessionStore('graph', graph);
   };
 
   // Whenever a node is deleted the consumer must delete any connected edges.
@@ -314,6 +316,7 @@ class Graph extends React.Component {
           edges: new Map([[`${viewEdge.source}_${viewEdge.target}`, viewEdge]]),
         },
       });
+      addToSessionStore('graph', graph);
     }
   };
 
@@ -476,7 +479,7 @@ class Graph extends React.Component {
       graph.nodes[indexOfNode].title = this.state.newNodeTitle;
 
       this.setState({ graph, selected: null });
-      // addToSessionStore('graph', graph);
+      addToSessionStore('graph', graph);
     }
   };
 
@@ -501,6 +504,7 @@ class Graph extends React.Component {
       graph.edges[indexOfEdge].handleText = this.state.newEdgeTitle;
 
       this.setState({ graph, selected: null });
+      addToSessionStore('graph', graph);
     }
   };
 
